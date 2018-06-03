@@ -3,6 +3,7 @@ package com.example.adrian.bakingapp;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -43,7 +44,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+        int spanCount = 1;
+        if(tabletSize){
+            spanCount = 2;
+        }
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this, spanCount);
         mRecyclerView.setLayoutManager(layoutManager);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setHasFixedSize(true);
@@ -71,56 +78,6 @@ public class MainActivity extends AppCompatActivity {
             public void onFailure(Call<List<Recipe>> call, Throwable t) {
                 Log.d("MainActivity", "error loading from API");
             }
-//            @Override
-//            public void onResponse(Call<RecipeResponse> call, Response<RecipeResponse> response) {
-//                if(response.isSuccessful()){
-//                    mAdapter.updateRecepies(response.body().getResults());
-//                }else {
-//                    int statusCode = response.code();
-//                    // handle request errors depending on status code
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<RecipeResponse> call, Throwable t) {
-//
-//            }
-
-
-//            @Override
-//            public void onResponse(Call<Recipe> call, Response<Recipe> response) {
-//                if (response.isSuccessful()){
-////                    mAdapter.updateRecepies(response);
-//                    mAdapter.updateRecepies(response.body());
-//                }else {
-//                    int statusCode  = response.code();
-//                    // handle request errors depending on status code
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<Recipe> call, Throwable t) {
-//                Log.d("MainActivity", "error loading from API");
-//            }
-
-//            @Override
-//            public void onResponse(Call<Recipe> call, Response<Recipe> response) {
-//
-//                if(response.isSuccessful()) {
-//                    mAdapter.updateAnswers(response.body().getItems());
-//                    Log.d("MainActivity", "posts loaded from API");
-//                }else {
-//                    int statusCode  = response.code();
-//                    // handle request errors depending on status code
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<SOAnswersResponse> call, Throwable t) {
-//                showErrorMessage();
-//                Log.d("MainActivity", "error loading from API");
-//
-//            }
         });
     }
 }
