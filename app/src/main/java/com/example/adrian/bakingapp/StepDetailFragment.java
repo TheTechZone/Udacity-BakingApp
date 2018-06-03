@@ -1,7 +1,11 @@
 package com.example.adrian.bakingapp;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.net.Uri;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +16,17 @@ import android.widget.TextView;
 
 import com.example.adrian.bakingapp.data.model.Step;
 import com.example.adrian.bakingapp.dummy.DummyContent;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.util.Util;
 
 import org.parceler.Parcels;
 
@@ -28,10 +43,6 @@ public class StepDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
-    private DummyContent.DummyItem mItem;
     private Step mStep;
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -40,9 +51,11 @@ public class StepDetailFragment extends Fragment {
     public StepDetailFragment() {
     }
 
+    private View parent;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
@@ -56,7 +69,52 @@ public class StepDetailFragment extends Fragment {
             if (appBarLayout != null) {
                 appBarLayout.setTitle("Step #" + mStep.getId());
             }
+
+
         }
+    }
+
+//    @Override
+//    public void onST(@NonNull View view, @Nullable Bundle savedInstanceState) {
+//        super.onViewCreated(view, savedInstanceState);
+//
+//    }
+
+
+    @Override
+    public void onStart() {
+        boolean a = getActivity().findViewById(R.id.player_view) != null;
+        playerView = (PlayerView) getActivity().findViewById(R.id.player_view);
+        if(playerView != null)
+            initializePlayer(mStep.videoURL);
+        super.onStart();
+
+    }
+
+    private SimpleExoPlayer player;
+    private PlayerView playerView;
+
+    private void initializePlayer(String uriString){
+       player = ExoPlayerFactory.newSimpleInstance(getContext(), new DefaultTrackSelector());
+       playerView.setPlayer(player);
+
+       if(uriString.equals("")){
+            releasePlayer();
+            playerView.setVisibility(View.GONE);
+            return;
+       }
+       DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(),
+               Util.getUserAgent(getContext(), "exoplay")));
+        ExtractorMediaSource mediaSource =  new ExtractorMediaSource.Factory(dataSourceFactory)
+               .createMediaSource(Uri.parse(uriString));
+
+       player.prepare(mediaSource);
+       player.setPlayWhenReady(true);
+    }
+
+    private void releasePlayer(){
+        playerView.setPlayer(null);
+        player.release();
     }
 
     @Override
