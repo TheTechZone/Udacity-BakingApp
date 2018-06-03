@@ -41,7 +41,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         public void onClick(View view) {
             Recipe recipe = getRecipe(getAdapterPosition());
             Log.e("Recipe img:", recipe.getImage());
-            this.mRecipeListener.onRecipeClick(recipe.getId());
+            this.mRecipeListener.onRecipeClick(recipe.getId(), recipe);
 
             notifyDataSetChanged();
         }
@@ -93,6 +93,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     }
 
     public interface RecipeItemListener {
-        void onRecipeClick(long id);
+        void onRecipeClick(long id, Recipe recipe);
     }
 }

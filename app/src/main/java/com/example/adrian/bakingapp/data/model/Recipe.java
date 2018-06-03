@@ -4,26 +4,29 @@ import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class Recipe {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    public Integer id;
     @SerializedName("name")
     @Expose
-    private String name;
+    public String name;
     @SerializedName("ingredients")
     @Expose
-    private List<Ingredient> ingredients = null;
+    public List<Ingredient> ingredients = null;
     @SerializedName("steps")
     @Expose
-    private List<Step> steps = null;
+    public List<Step> steps = null;
     @SerializedName("servings")
     @Expose
-    private Integer servings;
+    public Integer servings;
     @SerializedName("image")
     @Expose
-    private String image;
+    public String image;
 
     public Integer getId() {
         return id;
@@ -91,4 +94,11 @@ public class Recipe {
         this.image = image;
     }
 
+    public String ingredientsList(){
+        StringBuilder list= new StringBuilder();
+        for (Ingredient i : this.getIngredients()) {
+            list.append(i.getQuantity()).append("x ").append(i.getMeasure()).append(" ").append(i.getIngredient()).append("\n");
+        }
+        return list.toString();
+    }
 }

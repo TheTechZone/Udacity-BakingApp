@@ -1,19 +1,19 @@
 package com.example.adrian.bakingapp;
 
-import android.support.v7.app.AppCompatActivity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
+import android.os.Parcelable;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.adrian.bakingapp.adapter.RecipeAdapter;
 import com.example.adrian.bakingapp.data.model.Recipe;
-import com.example.adrian.bakingapp.data.model.RecipeResponse;
 import com.example.adrian.bakingapp.data.remote.ApiUtils;
 import com.example.adrian.bakingapp.data.remote.RecipeService;
+
+import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,12 +39,14 @@ public class MainActivity extends AppCompatActivity {
         mAdapter = new RecipeAdapter(this, new ArrayList<Recipe>(0),
             new RecipeAdapter.RecipeItemListener() {
             @Override
-            public void onRecipeClick(long id) {
-                Toast.makeText(MainActivity.this, "Recipe: " + id, Toast.LENGTH_SHORT).show();
+            public void onRecipeClick(long id, Recipe recipe) {
+                Intent intent = new Intent(MainActivity.this, StepListActivity.class);
+                Parcelable wrapped = Parcels.wrap(recipe);
+                intent.putExtra("recipe", wrapped);
+                startActivity(intent);
             }
         });
 
-//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
         int spanCount = 1;
         if(tabletSize){

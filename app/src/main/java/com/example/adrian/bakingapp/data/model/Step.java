@@ -3,23 +3,26 @@ package com.example.adrian.bakingapp.data.model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import org.parceler.Parcel;
+
+@Parcel
 public class Step {
 
     @SerializedName("id")
     @Expose
-    private Integer id;
+    public Integer id;
     @SerializedName("shortDescription")
     @Expose
-    private String shortDescription;
+    public String shortDescription;
     @SerializedName("description")
     @Expose
-    private String description;
+    public String description;
     @SerializedName("videoURL")
     @Expose
-    private String videoURL;
+    public String videoURL;
     @SerializedName("thumbnailURL")
     @Expose
-    private String thumbnailURL;
+    public String thumbnailURL;
 
     public Integer getId() {
         return id;
