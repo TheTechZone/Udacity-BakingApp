@@ -1,5 +1,7 @@
 package com.example.adrian.bakingapp.data.model;
 
+import android.content.Context;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -42,4 +44,16 @@ public class Ingredient {
         this.ingredient = ingredient;
     }
 
+    public String getListing(Context context){
+        String qty = "";
+        if(quantity == (int) quantity){
+            qty += (int) quantity;
+        } else {
+            qty += quantity;
+        }
+        int measureId = context.getResources().getIdentifier(measure.toLowerCase(),"string", context.getPackageName());
+        String measure = context.getResources().getString(measureId);
+
+        return String.format("%sx %s %s", qty, measure, ingredient);
+    }
 }

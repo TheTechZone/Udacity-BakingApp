@@ -93,12 +93,4 @@ public class Recipe {
         }
         this.image = image;
     }
-
-    public String ingredientsList(){
-        StringBuilder list= new StringBuilder();
-        for (Ingredient i : this.getIngredients()) {
-            list.append(i.getQuantity()).append("x ").append(i.getMeasure()).append(" ").append(i.getIngredient()).append("\n");
-        }
-        return list.toString();
-    }
 }

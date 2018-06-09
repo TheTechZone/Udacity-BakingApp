@@ -1,8 +1,12 @@
 package com.example.adrian.bakingapp;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -37,15 +41,28 @@ public class StepListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_step_list);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
         mRecipe = recipe;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName() + " Recipe");
 
-        TextView ingredientsTextView = findViewById(R.id.ingredients_tv);
-        ingredientsTextView.setText(mRecipe.ingredientsList());
+        final FloatingActionButton fab = findViewById(R.id.fab);
+        
+        fab.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(StepListActivity.this, IngredientsActivity.class);
+                Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(StepListActivity.this,
+                        fab, "listIngredients").toBundle();
+                intent1.putExtra("ing", Parcels.wrap(mRecipe));
+                startActivity(intent1, bundle);
+            }
+        });
+
+
         if (findViewById(R.id.step_detail_container) != null) {
             // The detail container view will be present only in the
             // large-screen layouts (res/values-w900dp).

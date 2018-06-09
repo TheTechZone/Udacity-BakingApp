@@ -4,4 +4,11 @@
     <string name="title_recipestep_detail">RecipeStep Detail</string>
     <string name="title_step_list">Steps</string>
     <string name="title_step_detail">Step Detail</string>
+
+    <string name="cup">cup(s)</string>
+    <string name="tsp">teaspoon(s)</string>
+    <string name="tblsp">tablespoon(s)</string>
+    <string name="k">kilogram(s)</string>
+    <string name="g">gram(s)</string>
+    <string name="oz">ounce(s)</string>
 </resources>
