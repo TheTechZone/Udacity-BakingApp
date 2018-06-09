@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.media.session.MediaSessionCompat;
+import android.support.v4.media.session.PlaybackStateCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +18,10 @@ import android.widget.TextView;
 
 import com.example.adrian.bakingapp.data.model.Step;
 import com.example.adrian.bakingapp.dummy.DummyContent;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -44,6 +48,10 @@ public class StepDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
 
     private Step mStep;
+    private MediaSessionCompat mediaSession;
+    private PlaybackStateCompat.Builder stateBuilder;
+    private MediaSessionConnector mediaSessionConnector;
+
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
@@ -85,8 +93,27 @@ public class StepDetailFragment extends Fragment {
     public void onStart() {
         boolean a = getActivity().findViewById(R.id.player_view) != null;
         playerView = (PlayerView) getActivity().findViewById(R.id.player_view);
+
+        mediaSession = new MediaSessionCompat(getContext(), "TAG");
+        mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
+                MediaSessionCompat.FLAG_HANDLES_TRANSPORT_CONTROLS);
+        mediaSession.setMediaButtonReceiver(null);
+        stateBuilder = new PlaybackStateCompat.Builder()
+                .setActions(
+                        PlaybackStateCompat.ACTION_PLAY |
+                                PlaybackStateCompat.ACTION_PAUSE |
+                                PlaybackStateCompat.ACTION_PLAY_PAUSE |
+                                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS
+                );
+
+        mediaSession.setPlaybackState(stateBuilder.build());
+//        mediaSession.setCallback(new mySessionCallback());
+//        mediaSession.setActive(true);
+        mediaSessionConnector = new MediaSessionConnector(mediaSession);
+
         if(playerView != null)
             initializePlayer(mStep.videoURL);
+
         super.onStart();
 
     }
@@ -95,6 +122,8 @@ public class StepDetailFragment extends Fragment {
     private PlayerView playerView;
 
     private void initializePlayer(String uriString){
+
+
        player = ExoPlayerFactory.newSimpleInstance(getContext(), new DefaultTrackSelector());
        playerView.setPlayer(player);
 
@@ -110,11 +139,25 @@ public class StepDetailFragment extends Fragment {
 
        player.prepare(mediaSource);
        player.setPlayWhenReady(true);
+
+       mediaSessionConnector.setPlayer(player, null,null);
+       mediaSession.setActive(true);
     }
 
     private void releasePlayer(){
-        playerView.setPlayer(null);
-        player.release();
+        mediaSessionConnector.setPlayer(null,null,null);
+        mediaSession.setActive(false);
+        if (player!=null) {
+            playerView.setPlayer(null);
+            player.release();
+            player = null;
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        releasePlayer();
     }
 
     @Override
@@ -128,5 +171,22 @@ public class StepDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    private class mySessionCallback extends MediaSessionCompat.Callback {
+        @Override
+        public void onPlay() {
+            super.onPlay();
+        }
+
+        @Override
+        public void onPause() {
+            super.onPause();
+        }
+
+        @Override
+        public void onSkipToPrevious() {
+            super.onSkipToPrevious();
+        }
     }
 }

@@ -36,5 +36,7 @@ dependencies {
 
     implementation 'org.parceler:parceler-api:1.1.10'
     annotationProcessor 'org.parceler:parceler:1.1.10'
+
     implementation 'com.google.android.exoplayer:exoplayer:2.8.1'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.8.1'
 }
