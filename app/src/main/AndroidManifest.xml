@@ -31,7 +31,24 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.example.adrian.bakingapp.StepListActivity" />
         </activity>
-        <activity android:name=".IngredientsActivity"></activity>
+
+        <activity android:name=".IngredientsActivity" />
+
+        <service android:name=".widget.WidgetUpdateService" />
+
+        <service android:name=".widget.WidgetViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <receiver android:name=".widget.IngredientsWidgetProvider" android:process=":remote">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.appwidget.action.APPWIDGET_DATA_UPDATE" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/ingredients_widget_info" />
+        </receiver>
     </application>
 
 </manifest>

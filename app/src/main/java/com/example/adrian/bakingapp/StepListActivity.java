@@ -16,6 +16,8 @@ import android.widget.Toast;
 
 import com.example.adrian.bakingapp.adapter.RecipeStepsAdapter;
 import com.example.adrian.bakingapp.data.model.Recipe;
+import com.example.adrian.bakingapp.widget.WidgetUpdateService;
+import com.example.adrian.bakingapp.widget.WidgetViewService;
 
 import org.parceler.Parcels;
 
@@ -73,6 +75,8 @@ public class StepListActivity extends AppCompatActivity {
 
         View recyclerView = findViewById(R.id.step_list);
         setupRecyclerView((RecyclerView) recyclerView);
+
+        WidgetUpdateService.startService(this,mRecipe.getIngredients());
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
