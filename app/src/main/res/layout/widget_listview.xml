@@ -2,12 +2,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#09C"
+    android:background="@color/colorPrimary"
     android:padding="@dimen/widget_margin">
 
     <TextView
         android:id="@+id/appwidget_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
@@ -15,9 +15,8 @@
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="#09C"
         android:contentDescription="@string/appwidget_text"
-        android:paddingLeft="8dp"
+        android:gravity="center_horizontal"
         android:text="@string/appwidget_text"
         android:textColor="#ffffff"
         android:textSize="24sp"
@@ -28,7 +27,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appwidget_label"
-        android:layout_margin="2dp"
-        android:horizontalSpacing="5dp"
-        android:verticalSpacing="5dp" />
+        />
 </RelativeLayout>

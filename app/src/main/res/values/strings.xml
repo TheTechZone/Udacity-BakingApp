@@ -13,6 +13,6 @@
     <string name="oz">ounce(s)</string>
     <string name="unit"></string>
 
-    <string name="appwidget_text">Recipe</string>
+    <string name="appwidget_text">Ingredients</string>
     <string name="add_widget">Add widget</string>
 </resources>

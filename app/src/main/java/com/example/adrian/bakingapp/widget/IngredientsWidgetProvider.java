@@ -6,23 +6,28 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Debug;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.adrian.bakingapp.R;
 import com.example.adrian.bakingapp.StepListActivity;
 import com.example.adrian.bakingapp.data.model.Ingredient;
+import com.google.gson.Gson;
 
 import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Implementation of App Widget functionality.
  */
 public class IngredientsWidgetProvider extends AppWidgetProvider {
 
-    public static List<Ingredient> ingredients = new ArrayList<Ingredient>();
+    static List<Ingredient> ingredients = new ArrayList<>();
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
@@ -30,7 +35,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         //CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_listview);
-        views.setTextViewText(R.id.appwidget_label, appWidgetId + "");
 
         Intent appIntent = new Intent(context, StepListActivity.class);
         appIntent.addCategory(Intent.ACTION_MAIN);
@@ -41,10 +45,28 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         views.setPendingIntentTemplate(R.id.widget_listview, pendingIntent);
 
         Intent adapterIntent = new Intent(context, WidgetViewService.class);
+//        adapterIntent.putExtra(WidgetUpdateService.KEY_INGREDIENTS,Parcels.wrap(ingredients));
+
+        Gson gson = new Gson();
+        String jsonData = gson.toJson(ingredients);
+        SharedPreferences prefs = context.getSharedPreferences(WidgetUpdateService.KEY_INGREDIENTS,
+                Context.MODE_MULTI_PROCESS);
+        SharedPreferences.Editor editor = prefs.edit();
+        if(prefs.contains(WidgetUpdateService.KEY_INGREDIENTS)) {
+            editor.remove(WidgetUpdateService.KEY_INGREDIENTS);
+            Log.e("service", "Shared pref removed");
+        }
+        editor.putString(WidgetUpdateService.KEY_INGREDIENTS, jsonData);
+
+        editor.apply();
+
         views.setRemoteAdapter(R.id.widget_listview, adapterIntent);
 
+//        views.setTextViewText(R.id.appwidget_label, ingredients.size() + "## :(");
+        Log.e("service", "Shared pref changed");
         // Instruct the widget manager to update the widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
+//        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, views.getLayoutId());
     }
 
     @Override
@@ -74,14 +96,13 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context, IngredientsWidgetProvider.class));
 
-        String action = intent.getAction();
-//      android.os.Debug.waitForDebugger();
+        final String action = intent.getAction();
 
         if (action.equals(WidgetUpdateService.UPDATE_ACTION)){
             ingredients = Parcels.unwrap(intent.getExtras().getParcelable(WidgetUpdateService.KEY_INGREDIENTS));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
 
-            updateWidgets(context,appWidgetManager,appWidgetIds);
+            IngredientsWidgetProvider.updateWidgets(context,appWidgetManager,appWidgetIds);
             super.onReceive(context, intent);
         }
     }

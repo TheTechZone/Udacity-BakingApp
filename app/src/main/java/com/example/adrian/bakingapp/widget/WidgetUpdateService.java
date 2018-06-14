@@ -26,7 +26,7 @@ public class WidgetUpdateService extends IntentService{
 
     public static void startService(Context context, List<Ingredient> ingredients){
         Intent intent = new Intent(context, WidgetUpdateService.class);
-        intent.putExtra("ingredientsKey", Parcels.wrap(ingredients));
+        intent.putExtra(KEY_INGREDIENTS, Parcels.wrap(ingredients));
         context.startService(intent);
     }
 

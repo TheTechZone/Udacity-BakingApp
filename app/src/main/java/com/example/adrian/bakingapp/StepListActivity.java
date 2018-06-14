@@ -1,6 +1,8 @@
 package com.example.adrian.bakingapp;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -77,6 +79,10 @@ public class StepListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
 
         WidgetUpdateService.startService(this,mRecipe.getIngredients());
+//        SharedPreferences prefs = getApplicationContext().getSharedPreferences("listIngredients",
+//                Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = prefs.edit();
+//        editor.remove("listIngredients");
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

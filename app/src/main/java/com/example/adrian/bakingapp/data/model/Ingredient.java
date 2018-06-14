@@ -54,6 +54,6 @@ public class Ingredient {
         int measureId = context.getResources().getIdentifier(measure.toLowerCase(),"string", context.getPackageName());
         String measure = context.getResources().getString(measureId);
 
-        return String.format("%sx %s %s", qty, measure, ingredient);
+        return String.format("%s %s %s", qty, measure, ingredient);
     }
 }
