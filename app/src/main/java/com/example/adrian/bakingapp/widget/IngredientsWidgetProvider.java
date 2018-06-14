@@ -31,8 +31,6 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
     static void updateAppWidget(Context context, AppWidgetManager appWidgetManager,
                                 int appWidgetId) {
-
-        //CharSequence widgetText = context.getString(R.string.appwidget_text);
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_listview);
 
@@ -45,8 +43,18 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         views.setPendingIntentTemplate(R.id.widget_listview, pendingIntent);
 
         Intent adapterIntent = new Intent(context, WidgetViewService.class);
-//        adapterIntent.putExtra(WidgetUpdateService.KEY_INGREDIENTS,Parcels.wrap(ingredients));
 
+        updatePref(context);
+
+
+        views.setRemoteAdapter(R.id.widget_listview, adapterIntent);
+
+        Log.e("service", "Shared pref changed");
+        // Instruct the widget manager to update the widget
+        appWidgetManager.updateAppWidget(appWidgetId, views);
+    }
+
+    static private void updatePref(Context context){
         Gson gson = new Gson();
         String jsonData = gson.toJson(ingredients);
         SharedPreferences prefs = context.getSharedPreferences(WidgetUpdateService.KEY_INGREDIENTS,
@@ -57,16 +65,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
             Log.e("service", "Shared pref removed");
         }
         editor.putString(WidgetUpdateService.KEY_INGREDIENTS, jsonData);
-
         editor.apply();
-
-        views.setRemoteAdapter(R.id.widget_listview, adapterIntent);
-
-//        views.setTextViewText(R.id.appwidget_label, ingredients.size() + "## :(");
-        Log.e("service", "Shared pref changed");
-        // Instruct the widget manager to update the widget
-        appWidgetManager.updateAppWidget(appWidgetId, views);
-//        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, views.getLayoutId());
     }
 
     @Override

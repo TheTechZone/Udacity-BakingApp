@@ -79,10 +79,6 @@ public class StepListActivity extends AppCompatActivity {
         setupRecyclerView((RecyclerView) recyclerView);
 
         WidgetUpdateService.startService(this,mRecipe.getIngredients());
-//        SharedPreferences prefs = getApplicationContext().getSharedPreferences("listIngredients",
-//                Context.MODE_PRIVATE);
-//        SharedPreferences.Editor editor = prefs.edit();
-//        editor.remove("listIngredients");
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {
