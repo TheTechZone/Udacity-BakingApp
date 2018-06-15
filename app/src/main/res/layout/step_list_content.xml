@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:paddingLeft="8dp"
     android:layout_marginLeft="24dp"
     android:layout_marginRight="24dp"
     android:layout_marginTop="8dp"
-    android:paddingRight="8dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:paddingLeft="8dp"
+    android:paddingRight="8dp">
 
     <TextView
         android:id="@+id/content"
@@ -16,5 +16,5 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/text_margin"
         android:textSize="16sp"
-        tools:text="Sample text"/>
+        tools:text="Sample text" />
 </android.support.v7.widget.CardView>

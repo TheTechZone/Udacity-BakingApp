@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.StepDetailActivity"
-    tools:ignore="MergeRootFrame">
+    tools:context=".ui.StepListActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -15,30 +14,33 @@
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/detail_toolbar"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
-
     <RelativeLayout
+        android:id="@+id/frameLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <com.google.android.exoplayer2.ui.PlayerView
-            android:id="@+id/player_view"
+        <include
+            layout="@layout/step_list"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:padding="0dp" />
-
-        <android.support.v4.widget.NestedScrollView
-            android:id="@+id/step_detail_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="200dp" />
+            android:layout_height="match_parent" />
     </RelativeLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_ingredients"
+        android:transitionName="@string/list_ingredients_transiton"
+        app:fabSize="normal" />
+
 </android.support.design.widget.CoordinatorLayout>

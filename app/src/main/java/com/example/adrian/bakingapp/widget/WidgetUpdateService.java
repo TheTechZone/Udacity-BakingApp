@@ -10,21 +10,21 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-public class WidgetUpdateService extends IntentService{
+public class WidgetUpdateService extends IntentService {
 
     static String UPDATE_ACTION = "android.appwidget.action.APPWIDGET_DATA_UPDATE";
     static String KEY_INGREDIENTS = "listIngredients";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
+     * <p>
      * name Used to name the worker thread, important only for debugging.
      */
     public WidgetUpdateService() {
         super("WidgetUpdateService");
     }
 
-    public static void startService(Context context, List<Ingredient> ingredients){
+    public static void startService(Context context, List<Ingredient> ingredients) {
         Intent intent = new Intent(context, WidgetUpdateService.class);
         intent.putExtra(KEY_INGREDIENTS, Parcels.wrap(ingredients));
         context.startService(intent);
@@ -32,13 +32,13 @@ public class WidgetUpdateService extends IntentService{
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        if (intent != null){
+        if (intent != null) {
             List<Ingredient> ingredientList = Parcels.unwrap(intent.getExtras().getParcelable(KEY_INGREDIENTS));
             passIntent(ingredientList);
         }
     }
 
-    private void passIntent(List<Ingredient> list){
+    private void passIntent(List<Ingredient> list) {
         Intent intent = new Intent(UPDATE_ACTION);
         intent.setAction(UPDATE_ACTION);
         intent.putExtra(KEY_INGREDIENTS, Parcels.wrap(list));

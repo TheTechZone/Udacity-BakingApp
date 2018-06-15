@@ -1,8 +1,6 @@
-package com.example.adrian.bakingapp;
+package com.example.adrian.bakingapp.ui;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,13 +11,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.adrian.bakingapp.R;
 import com.example.adrian.bakingapp.adapter.RecipeStepsAdapter;
 import com.example.adrian.bakingapp.data.model.Recipe;
 import com.example.adrian.bakingapp.widget.WidgetUpdateService;
-import com.example.adrian.bakingapp.widget.WidgetViewService;
 
 import org.parceler.Parcels;
 
@@ -39,6 +36,7 @@ public class StepListActivity extends AppCompatActivity {
      */
     private boolean mTwoPane;
     private Recipe mRecipe;
+    static String RECIPE_BUNDLE_KEY = "recipeBundleExtra";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +44,14 @@ public class StepListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_step_list);
 
         final Intent intent = getIntent();
-        Recipe recipe = Parcels.unwrap(intent.getParcelableExtra("recipe"));
+        Recipe recipe = Parcels.unwrap(intent.getParcelableExtra(RECIPE_BUNDLE_KEY));
         mRecipe = recipe;
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(recipe.getName() + " Recipe");
 
         final FloatingActionButton fab = findViewById(R.id.fab);
-        
+
         fab.setOnClickListener(new View.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
@@ -61,7 +59,7 @@ public class StepListActivity extends AppCompatActivity {
                 Intent intent1 = new Intent(StepListActivity.this, IngredientsActivity.class);
                 Bundle bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(StepListActivity.this,
                         fab, "listIngredients").toBundle();
-                intent1.putExtra("ing", Parcels.wrap(mRecipe));
+                intent1.putExtra(RECIPE_BUNDLE_KEY, Parcels.wrap(mRecipe));
                 startActivity(intent1, bundle);
             }
         });
@@ -75,10 +73,10 @@ public class StepListActivity extends AppCompatActivity {
             mTwoPane = true;
         }
 
-        View recyclerView = findViewById(R.id.step_list);
+        View recyclerView = findViewById(R.id.rv_step_list);
         setupRecyclerView((RecyclerView) recyclerView);
 
-        WidgetUpdateService.startService(this,mRecipe.getIngredients());
+        WidgetUpdateService.startService(this, mRecipe.getIngredients());
     }
 
     private void setupRecyclerView(@NonNull RecyclerView recyclerView) {

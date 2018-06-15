@@ -2,7 +2,6 @@ package com.example.adrian.bakingapp.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,32 +19,6 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     private List<Recipe> mRecepies;
     private Context mContext;
     private RecipeItemListener mRecipeListener;
-
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-
-        public TextView titleTv;
-        public ImageView coverIv;
-
-        RecipeItemListener mRecipeListener;
-
-        public ViewHolder(View itemView, RecipeItemListener recipeItemListener) {
-            super(itemView);
-            titleTv = (TextView) itemView.findViewById(R.id.recipe_name_tv);
-            coverIv = itemView.findViewById(R.id.recipe_cover_iv);
-
-            this.mRecipeListener = recipeItemListener;
-            itemView.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View view) {
-            Recipe recipe = getRecipe(getAdapterPosition());
-            Log.e("Recipe img:", recipe.getImage());
-            this.mRecipeListener.onRecipeClick(recipe.getId(), recipe);
-
-            notifyDataSetChanged();
-        }
-    }
 
     public RecipeAdapter(Context context, List<Recipe> recipes, RecipeItemListener recipeListener) {
         mRecepies = recipes;
@@ -70,6 +43,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
         Recipe recipe = mRecepies.get(position);
         TextView textView = holder.titleTv;
         textView.setText(recipe.getName());
+        holder.itemView.setTag(position);
         ImageView imageView = holder.coverIv;
         Picasso.get().load(recipe.getImage()).into(imageView);
     }
@@ -82,7 +56,7 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
     public void updateRecepies(List<Recipe> recipes) {
         mRecepies = recipes;
         // a little bit of a hack
-        for (Recipe r: mRecepies) {
+        for (Recipe r : mRecepies) {
             r.setImage("");
         }
         notifyDataSetChanged();
@@ -94,5 +68,30 @@ public class RecipeAdapter extends RecyclerView.Adapter<RecipeAdapter.ViewHolder
 
     public interface RecipeItemListener {
         void onRecipeClick(long id, Recipe recipe);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView titleTv;
+        public ImageView coverIv;
+
+        RecipeItemListener mRecipeListener;
+
+        public ViewHolder(View itemView, RecipeItemListener recipeItemListener) {
+            super(itemView);
+            titleTv = itemView.findViewById(R.id.recipe_name_tv);
+            coverIv = itemView.findViewById(R.id.recipe_cover_iv);
+
+            this.mRecipeListener = recipeItemListener;
+            itemView.setOnClickListener(this);
+        }
+
+        @Override
+        public void onClick(View view) {
+            Recipe recipe = getRecipe(getAdapterPosition());
+            this.mRecipeListener.onRecipeClick(recipe.getId(), recipe);
+
+            notifyDataSetChanged();
+        }
     }
 }

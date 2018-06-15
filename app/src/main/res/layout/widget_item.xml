@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
+
     <TextView
         android:id="@+id/widget_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:paddingLeft="8dp"
-        android:paddingRight="8dp"
         android:background="@color/colorPrimary"
         android:gravity="center_horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:textColor="#ffffff"
-        android:text="Sample text"/>
+        android:textSize="24sp"
+        tools:text="Sample text" />
 </LinearLayout>

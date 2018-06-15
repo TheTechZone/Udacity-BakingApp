@@ -1,7 +1,6 @@
 package com.example.adrian.bakingapp.adapter;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,20 +16,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private List<Ingredient> mIngredients;
     private Context mContext;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        // fields
-        final TextView contentTextView;
-
-        StepItemListener mStepListener;
-
-        public ViewHolder(View view) {
-            super(view);
-            contentTextView = (TextView) view.findViewById(R.id.content);
-        }
-
-    }
-
-    public IngredientsAdapter(Context context, List<Ingredient> ingredients){
+    public IngredientsAdapter(Context context, List<Ingredient> ingredients) {
         mContext = context;
         mIngredients = ingredients;
     }
@@ -58,14 +44,28 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return mIngredients.size();
     }
 
-    public void updateSteps(List<Ingredient> ingredients){
+    public void updateSteps(List<Ingredient> ingredients) {
         mIngredients = ingredients;
         notifyDataSetChanged();
     }
 
-    private Ingredient getIngredients(int adapterPosition){ return mIngredients.get(adapterPosition); }
+    private Ingredient getIngredients(int adapterPosition) {
+        return mIngredients.get(adapterPosition);
+    }
 
-    public interface StepItemListener{
+    public interface StepItemListener {
         void onStepClick(long id);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        final TextView contentTextView;
+
+        StepItemListener mStepListener;
+
+        public ViewHolder(View view) {
+            super(view);
+            contentTextView = view.findViewById(R.id.content);
+        }
+
     }
 }

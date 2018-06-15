@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".ui.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -19,27 +19,30 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StepListActivity"
+            android:name=".ui.StepListActivity"
             android:label="@string/title_step_list"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".StepDetailActivity"
+            android:name=".ui.StepDetailActivity"
             android:label="@string/title_step_detail"
-            android:parentActivityName=".StepListActivity"
+            android:parentActivityName=".ui.StepListActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.example.adrian.bakingapp.StepListActivity" />
+                android:value="com.example.adrian.bakingapp.ui.StepListActivity" />
         </activity>
 
-        <activity android:name=".IngredientsActivity" />
+        <activity android:name=".ui.IngredientsActivity" />
 
         <service android:name=".widget.WidgetUpdateService" />
 
-        <service android:name=".widget.WidgetViewService"
-            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name=".widget.WidgetViewService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name=".widget.IngredientsWidgetProvider" android:process=":remote">
+        <receiver
+            android:name=".widget.IngredientsWidgetProvider"
+            android:process=":remote">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="android.appwidget.action.APPWIDGET_DATA_UPDATE" />

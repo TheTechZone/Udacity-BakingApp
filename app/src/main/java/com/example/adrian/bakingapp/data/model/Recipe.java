@@ -1,10 +1,11 @@
 package com.example.adrian.bakingapp.data.model;
 
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import org.parceler.Parcel;
+
+import java.util.List;
 
 @Parcel
 public class Recipe {
@@ -73,8 +74,8 @@ public class Recipe {
     }
 
     public void setImage(String image) {
-        if(image.equals("")){
-            switch (this.name){
+        if (image.equals("")) {
+            switch (this.name) {
                 case "Nutella Pie":
                     image = "https://assets.epicurious.com/photos/54ac95e819925f464b3ac37e/master/pass/51229210_nutella-pie_1x1.jpg";
                     break;

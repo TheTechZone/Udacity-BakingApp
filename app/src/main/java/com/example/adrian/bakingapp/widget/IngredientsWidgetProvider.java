@@ -7,12 +7,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Debug;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.adrian.bakingapp.R;
-import com.example.adrian.bakingapp.StepListActivity;
+import com.example.adrian.bakingapp.ui.StepListActivity;
 import com.example.adrian.bakingapp.data.model.Ingredient;
 import com.google.gson.Gson;
 
@@ -20,7 +19,6 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Implementation of App Widget functionality.
@@ -37,7 +35,7 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         Intent appIntent = new Intent(context, StepListActivity.class);
         appIntent.addCategory(Intent.ACTION_MAIN);
         appIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-        appIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT|Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        appIntent.addFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, appIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         views.setPendingIntentTemplate(R.id.widget_listview, pendingIntent);
@@ -54,13 +52,13 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         appWidgetManager.updateAppWidget(appWidgetId, views);
     }
 
-    static private void updatePref(Context context){
+    static private void updatePref(Context context) {
         Gson gson = new Gson();
         String jsonData = gson.toJson(ingredients);
         SharedPreferences prefs = context.getSharedPreferences(WidgetUpdateService.KEY_INGREDIENTS,
                 Context.MODE_MULTI_PROCESS);
         SharedPreferences.Editor editor = prefs.edit();
-        if(prefs.contains(WidgetUpdateService.KEY_INGREDIENTS)) {
+        if (prefs.contains(WidgetUpdateService.KEY_INGREDIENTS)) {
             editor.remove(WidgetUpdateService.KEY_INGREDIENTS);
             Log.e("service", "Shared pref removed");
         }
@@ -68,16 +66,16 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
         editor.apply();
     }
 
-    @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
-        updateWidgets(context,appWidgetManager, appWidgetIds);
-    }
-
     public static void updateWidgets(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         for (int appWidgetId : appWidgetIds) {
             updateAppWidget(context, appWidgetManager, appWidgetId);
         }
+    }
+
+    @Override
+    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        // There may be multiple widgets active, so update all of them
+        updateWidgets(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -97,11 +95,11 @@ public class IngredientsWidgetProvider extends AppWidgetProvider {
 
         final String action = intent.getAction();
 
-        if (action.equals(WidgetUpdateService.UPDATE_ACTION)){
+        if (action.equals(WidgetUpdateService.UPDATE_ACTION)) {
             ingredients = Parcels.unwrap(intent.getExtras().getParcelable(WidgetUpdateService.KEY_INGREDIENTS));
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds, R.id.widget_listview);
 
-            IngredientsWidgetProvider.updateWidgets(context,appWidgetManager,appWidgetIds);
+            IngredientsWidgetProvider.updateWidgets(context, appWidgetManager, appWidgetIds);
             super.onReceive(context, intent);
         }
     }

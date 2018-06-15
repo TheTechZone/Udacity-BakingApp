@@ -44,14 +44,14 @@ public class Ingredient {
         this.ingredient = ingredient;
     }
 
-    public String getListing(Context context){
+    public String getListing(Context context) {
         String qty = "";
-        if(quantity == (int) quantity){
+        if (quantity == (int) quantity) {
             qty += (int) quantity;
         } else {
             qty += quantity;
         }
-        int measureId = context.getResources().getIdentifier(measure.toLowerCase(),"string", context.getPackageName());
+        int measureId = context.getResources().getIdentifier(measure.toLowerCase(), "string", context.getPackageName());
         String measure = context.getResources().getString(measureId);
 
         return String.format("%s %s %s", qty, measure, ingredient);

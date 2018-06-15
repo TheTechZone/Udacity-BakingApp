@@ -1,34 +1,27 @@
-package com.example.adrian.bakingapp;
+package com.example.adrian.bakingapp.ui;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.net.Uri;
-import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.adrian.bakingapp.R;
 import com.example.adrian.bakingapp.data.model.Step;
-import com.example.adrian.bakingapp.dummy.DummyContent;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelection;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
-import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
 
@@ -48,9 +41,13 @@ public class StepDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
 
     private Step mStep;
+    private TextView detailTextView;
     private MediaSessionCompat mediaSession;
     private PlaybackStateCompat.Builder stateBuilder;
     private MediaSessionConnector mediaSessionConnector;
+    private View parent;
+    private SimpleExoPlayer player;
+    private PlayerView playerView;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -59,7 +56,6 @@ public class StepDetailFragment extends Fragment {
     public StepDetailFragment() {
     }
 
-    private View parent;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,26 +69,22 @@ public class StepDetailFragment extends Fragment {
             mStep = Parcels.unwrap(p);
 
             Activity activity = this.getActivity();
-            CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            //CollapsingToolbarLayout appBarLayout = (CollapsingToolbarLayout) activity.findViewById(R.id.toolbar_layout);
+            Toolbar appBarLayout = activity.findViewById(R.id.detail_toolbar);
             if (appBarLayout != null) {
-                appBarLayout.setTitle("Step #" + mStep.getId());
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    appBarLayout.setTitle("Step #" + mStep.getId());
+                }
             }
 
 
         }
     }
 
-//    @Override
-//    public void onST(@NonNull View view, @Nullable Bundle savedInstanceState) {
-//        super.onViewCreated(view, savedInstanceState);
-//
-//    }
-
-
     @Override
     public void onStart() {
         boolean a = getActivity().findViewById(R.id.player_view) != null;
-        playerView = (PlayerView) getActivity().findViewById(R.id.player_view);
+        playerView = getActivity().findViewById(R.id.player_view);
 
         mediaSession = new MediaSessionCompat(getContext(), "TAG");
         mediaSession.setFlags(MediaSessionCompat.FLAG_HANDLES_MEDIA_BUTTONS |
@@ -107,51 +99,41 @@ public class StepDetailFragment extends Fragment {
                 );
 
         mediaSession.setPlaybackState(stateBuilder.build());
-//        mediaSession.setCallback(new mySessionCallback());
-//        mediaSession.setActive(true);
         mediaSessionConnector = new MediaSessionConnector(mediaSession);
 
-        if(playerView != null)
+        if (playerView != null)
             initializePlayer(mStep.videoURL);
 
         super.onStart();
 
     }
 
-    private SimpleExoPlayer player;
-    private PlayerView playerView;
-
-    private void initializePlayer(String uriString){
+    private void initializePlayer(String uriString) {
 
 
-       player = ExoPlayerFactory.newSimpleInstance(getContext(), new DefaultTrackSelector());
-       playerView.setPlayer(player);
+        player = ExoPlayerFactory.newSimpleInstance(getContext(), new DefaultTrackSelector());
+        playerView.setPlayer(player);
 
-       if(uriString.equals("")){
+        if (uriString.equals("")) {
             releasePlayer();
             playerView.setVisibility(View.GONE);
             return;
-       }
-       DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(),
-               Util.getUserAgent(getContext(), "exoplay")));
-        ExtractorMediaSource mediaSource =  new ExtractorMediaSource.Factory(dataSourceFactory)
-               .createMediaSource(Uri.parse(uriString));
+        }
+        DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(),
+                Util.getUserAgent(getContext(), "exoplay")));
+        ExtractorMediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
+                .createMediaSource(Uri.parse(uriString));
 
-       player.prepare(mediaSource);
-       player.setPlayWhenReady(true);
+        player.prepare(mediaSource);
+        player.setPlayWhenReady(true);
 
-       mediaSessionConnector.setPlayer(player, null,null);
-       mediaSession.setActive(true);
+        mediaSessionConnector.setPlayer(player, null, (MediaSessionConnector.CustomActionProvider[]) null);
+        mediaSession.setActive(true);
     }
 
-    private void releasePlayer(){
-        mediaSessionConnector.setPlayer(null,null,null);
+    private void releasePlayer() {
+        mediaSessionConnector.setPlayer(null, null, (MediaSessionConnector.CustomActionProvider[]) null);
         mediaSession.setActive(false);
-        if (player!=null) {
-            playerView.setPlayer(null);
-            player.release();
-            player = null;
-        }
     }
 
     @Override
@@ -167,26 +149,11 @@ public class StepDetailFragment extends Fragment {
 
         // Show the content as text in a TextView.
         if (mStep != null) {
-            ((TextView) rootView.findViewById(R.id.step_detail)).setText(mStep.getDescription());
+            detailTextView = rootView.findViewById(R.id.step_detail);
+            detailTextView.setText(mStep.getDescription());
         }
 
         return rootView;
     }
 
-    private class mySessionCallback extends MediaSessionCompat.Callback {
-        @Override
-        public void onPlay() {
-            super.onPlay();
-        }
-
-        @Override
-        public void onPause() {
-            super.onPause();
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            super.onSkipToPrevious();
-        }
-    }
 }

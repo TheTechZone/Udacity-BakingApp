@@ -18,16 +18,17 @@
         android:textColor="#ffffff"
         android:textSize="24sp"
         android:textStyle="bold|italic" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/label_tv"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:textSize="16sp"
+        android:gravity="center_vertical|center_horizontal"
         android:paddingLeft="8dp"
         android:paddingRight="8dp"
+        android:text="@string/widget_msg"
         android:textColor="#ffffff"
-        android:gravity="center_vertical|center_horizontal"
-        android:text="Recipe ingredients will show here after opening Baking App."/>
+        android:textSize="16sp" />
 </RelativeLayout>
