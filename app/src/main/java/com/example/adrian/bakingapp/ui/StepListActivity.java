@@ -11,7 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.adrian.bakingapp.R;
 import com.example.adrian.bakingapp.adapter.RecipeStepsAdapter;
@@ -83,7 +82,7 @@ public class StepListActivity extends AppCompatActivity {
         recyclerView.setAdapter(new RecipeStepsAdapter(this, this, mRecipe.getSteps(), mTwoPane, new RecipeStepsAdapter.StepItemListener() {
             @Override
             public void onStepClick(long id) {
-                Toast.makeText(StepListActivity.this, "ID: " + id, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(StepListActivity.this, "ID: " + id, Toast.LENGTH_SHORT).show();
             }
         }));
     }

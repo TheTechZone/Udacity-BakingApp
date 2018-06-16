@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
@@ -39,6 +40,7 @@ public class StepDetailFragment extends Fragment {
      * represents.
      */
     public static final String ARG_ITEM_ID = "item_id";
+    public static final String PLAYER_KEY = "playerPosition";
 
     private Step mStep;
     private TextView detailTextView;
@@ -48,6 +50,8 @@ public class StepDetailFragment extends Fragment {
     private View parent;
     private SimpleExoPlayer player;
     private PlayerView playerView;
+
+    private long playerPosition = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -77,13 +81,42 @@ public class StepDetailFragment extends Fragment {
                 }
             }
 
+        }
 
+        if (savedInstanceState != null){
+            if (savedInstanceState.containsKey(PLAYER_KEY)){
+                playerPosition = savedInstanceState.getLong(PLAYER_KEY);
+            }
         }
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.step_detail, container, false);
+
+        playerView = rootView.findViewById(R.id.player_view);
+//        inflater.inflate(R.layout.activity_step_detail, container,false);
+        // Show the content as text in a TextView.
+        if (mStep != null) {
+            detailTextView = rootView.findViewById(R.id.step_detail);
+            detailTextView.setText(mStep.getDescription());
+        }
+
+        return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        if (player != null){
+            outState.putLong(PLAYER_KEY, player.getContentPosition());
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
     public void onStart() {
-        boolean a = getActivity().findViewById(R.id.player_view) != null;
+        if (playerView == null)
         playerView = getActivity().findViewById(R.id.player_view);
 
         mediaSession = new MediaSessionCompat(getContext(), "TAG");
@@ -110,7 +143,6 @@ public class StepDetailFragment extends Fragment {
 
     private void initializePlayer(String uriString) {
 
-
         player = ExoPlayerFactory.newSimpleInstance(getContext(), new DefaultTrackSelector());
         playerView.setPlayer(player);
 
@@ -119,12 +151,14 @@ public class StepDetailFragment extends Fragment {
             playerView.setVisibility(View.GONE);
             return;
         }
+
         DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(getContext(), Util.getUserAgent(getContext(),
                 Util.getUserAgent(getContext(), "exoplay")));
         ExtractorMediaSource mediaSource = new ExtractorMediaSource.Factory(dataSourceFactory)
                 .createMediaSource(Uri.parse(uriString));
 
         player.prepare(mediaSource);
+        player.seekTo(playerPosition);
         player.setPlayWhenReady(true);
 
         mediaSessionConnector.setPlayer(player, null, (MediaSessionConnector.CustomActionProvider[]) null);
@@ -132,28 +166,25 @@ public class StepDetailFragment extends Fragment {
     }
 
     private void releasePlayer() {
+        if(player!=null)
+            player.release();
         mediaSessionConnector.setPlayer(null, null, (MediaSessionConnector.CustomActionProvider[]) null);
         mediaSession.setActive(false);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onPause() {
+        super.onPause();
         releasePlayer();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.step_detail, container, false);
-
-        // Show the content as text in a TextView.
-        if (mStep != null) {
-            detailTextView = rootView.findViewById(R.id.step_detail);
-            detailTextView.setText(mStep.getDescription());
+    public void onStop() {
+        super.onStop();
+        if (player != null){
+            player.stop();
         }
-
-        return rootView;
+        releasePlayer();
     }
 
 }

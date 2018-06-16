@@ -48,7 +48,7 @@ public class StepDetailActivity extends AppCompatActivity {
             StepDetailFragment fragment = new StepDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.step_detail_container, fragment)
+                    .add(R.id.detail_layout, fragment)
                     .commit();
         }
     }
